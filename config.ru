@@ -3,5 +3,6 @@ require 'bundler'
 
 Bundler.require
 
-require './ddp'
+require './app'
+
 run App

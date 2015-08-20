@@ -1,12 +1,28 @@
+require 'dotenv'
+
+Dotenv.load
+
 require 'json'
 require 'logger'
+require 'sqlanywhere'
+require 'dbi'
+
+set :database_file, 'config/database.yml'
 
 class App < Sinatra::Application
 
   configure do
-    LOGGER = Logger.new("log/access.log")
+    LOGGER = Logger.new 'log/access.log'
+
     enable :logging
     use Rack::CommonLogger, LOGGER
+  end
+
+  # test
+  get '/' do
+
+    LOGGER.info 'test:'
+    LOGGER.info
   end
 
   # metadata web service
@@ -15,7 +31,7 @@ class App < Sinatra::Application
     @project_id = params['project_id']
     @redcap_url = params['redcap_url']
 
-    LOGGER.info "parameters:"
+    LOGGER.info 'parameters:'
     LOGGER.info params.inspect
   end
 
@@ -30,7 +46,19 @@ class App < Sinatra::Application
     @id         = req['id']
     @fields     = req['fields']
 
-    LOGGER.info "parameters:"
+    LOGGER.info 'parameters:'
     LOGGER.info req.inspect
+  end
+
+  private
+
+  def establish_db_connection
+    @api = SQLAnywhere::SQLAnywhereInterface.new()
+
+    SQLAnywhere::API.sqlany_initialize_interface(@api)
+    @api.sqlany_init()
+
+    conn = @api.sqlany_new_connection()
+    @api.sqlany_connect(conn, "uid=dba;pwd=sql")
   end
 end
