@@ -1,12 +1,10 @@
 source 'http://rubygems.org/'
 
-gem 'dbd-sqlanywhere'
-gem 'dbi'
 gem 'dotenv'
 gem 'foreman'
 gem 'puma'
 gem 'sinatra'
-gem 'sqlanywhere'
+gem 'tiny_tds'
 
 group :test, :development do
   gem 'rspec'
