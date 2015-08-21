@@ -1,14 +1,14 @@
 class DbClient
   
   def client
-    @client ||= TinyTds::Client.new db_client_params
+    TinyTds::Client.new db_client_params
   end
 
   private
 
   def db_client_params
     {
-      dataserver:  ENV.fetch('DB_HOSTNAME'),
+      dataserver:  ENV.fetch('DB_DATASERVER'),
       username:    ENV.fetch('DB_USERNAME'),
       password:    ENV.fetch('DB_PASSWORD'),
       database:    ENV.fetch('DB_DATABASE'),

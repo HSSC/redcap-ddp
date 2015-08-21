@@ -1,8 +1,0 @@
-development:
-  username: ENV.fetch('DB_USERNAME')
-  password: ENV.fetch('DB_PASSWORD')
-  adapter: sqlanywhere
-  database: ENV.fetch('DB_DATABASE')
-  pool: 5
-  timeout: 5000
-  host: ENV.fetch('DB_HOST')

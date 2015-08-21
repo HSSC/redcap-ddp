@@ -1,7 +1,3 @@
-require 'dotenv'
-
-Dotenv.load
-
 require 'json'
 require 'logger'
 require 'tiny_tds'
