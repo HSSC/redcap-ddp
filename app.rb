@@ -27,6 +27,10 @@ class App < Sinatra::Application
 
     LOGGER.info 'parameters:'
     LOGGER.info params.inspect
+
+    content_type :json
+
+    File.read 'public/metadata.json'
   end
 
   # data web service

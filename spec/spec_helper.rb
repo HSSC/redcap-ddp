@@ -16,11 +16,25 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'dotenv'
+
+Dotenv.load
+
 require 'rack/test'
 require 'sinatra'
-require File.dirname(__FILE__) + '/../ddp'
+require 'sinatra/base'
+require 'rack/test'
+require './app.rb'
+
+ENV['RACK_ENV'] = 'test'
+
+def app
+  App.new
+end
 
 RSpec.configure do |config|
+  # Rack-Test
+  config.include Rack::Test::Methods
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
