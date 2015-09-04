@@ -33,6 +33,9 @@ def app
 end
 
 RSpec.configure do |config|
+  config.color = true
+  config.formatter = :documentation
+  config.tty = true
   # Rack-Test
   config.include Rack::Test::Methods
   # rspec-expectations config goes here. You can use an alternate

@@ -1,7 +1,9 @@
 require 'json'
 require 'logger'
 require 'tiny_tds'
+
 require_relative 'db_client'
+require_relative 'query'
 
 class App < Sinatra::Application
 
@@ -10,13 +12,6 @@ class App < Sinatra::Application
 
     enable :logging
     use Rack::CommonLogger, LOGGER
-
-    puts "DEBUG: #{DbClient.new.client.active?}"
-  end
-
-  # test
-  get '/' do
-    LOGGER.info 'test:'
   end
 
   # metadata web service
@@ -46,5 +41,11 @@ class App < Sinatra::Application
 
     LOGGER.info 'parameters:'
     LOGGER.info req.inspect
+
+    content_type :json
+
+    results = Query.new(@id, @fields).execute
+
+    results.first.to_json
   end
 end
