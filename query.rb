@@ -8,8 +8,19 @@ class Query < DbClient
   end
 
   def execute
-    columns = @fields.map { |f| f['field'] }.join(',')
-    puts "Query: columns=#{columns}"
-    client.execute("SELECT #{columns} FROM #{PATIENTS_TABLE} WHERE SourceSystem=\"EPIC\" AND PatientExternalID=\"#{@id}\"")
+    results = []
+    rows    = client.execute("SELECT #{columns} FROM #{PATIENTS_TABLE} WHERE SourceSystem=\"EPIC\" AND PatientExternalID=\"#{@id}\"")
+
+    rows.each do |row| 
+      row.each { |key, value| results.push({ field: key, value:  value }) }
+    end
+
+    results
+  end
+
+  private
+
+  def columns
+    @fields.map { |f| f['field'] }.join(',')
   end
 end

@@ -45,7 +45,7 @@ class App < Sinatra::Application
     content_type :json
 
     results = Query.new(@id, @fields).execute
-
-    results.first.to_json
+    
+    results.to_json
   end
 end
