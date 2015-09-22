@@ -14,7 +14,7 @@ class App < Sinatra::Application
     enable :logging
     use Rack::CommonLogger, LOGGER
 
-    set :metadata, JSON.parse(File.read('public/metadata.json'))
+    set :metadata, Dir["#{settings.public_folder}/*.json"].map { |file| JSON.parse File.read(file) }.flatten
   end
 
   # metadata web service
