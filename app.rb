@@ -31,11 +31,13 @@ class App < Sinatra::Application
 
   # data web service
   post '/data' do
-    @user       = params['user']
-    @project_id = params['project_id']
-    @redcap_url = params['redcap_url']
-    @id         = params['id']
-    @fields     = params['fields']
+    payload     = JSON.parse request.body.read
+
+    @user       = payload['user']
+    @project_id = payload['project_id']
+    @redcap_url = payload['redcap_url']
+    @id         = payload['id']
+    @fields     = payload['fields']
 
     LOGGER.info 'parameters:'
     LOGGER.info params.inspect
