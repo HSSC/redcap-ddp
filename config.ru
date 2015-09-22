@@ -7,4 +7,4 @@ Dotenv.load
 
 require './app'
 
-run App
+run GlobalNamespace::App
