@@ -1,3 +1,4 @@
+require 'sinatra/json'
 require 'json'
 require 'logger'
 require 'tiny_tds'
@@ -12,6 +13,8 @@ class App < Sinatra::Application
 
     enable :logging
     use Rack::CommonLogger, LOGGER
+
+    set :metadata, JSON.parse(File.read('public/metadata.json'))
   end
 
   # metadata web service
@@ -23,29 +26,22 @@ class App < Sinatra::Application
     LOGGER.info 'parameters:'
     LOGGER.info params.inspect
 
-    content_type :json
-
-    File.read 'public/metadata.json'
+    json settings.metadata
   end
 
   # data web service
   post '/data' do
-    request.body.rewind
-    req         = JSON.parse request.body.read
-
-    @user       = req['user']
-    @project_id = req['project_id']
-    @redcap_url = req['redcap_url']
-    @id         = req['id']
-    @fields     = req['fields']
+    @user       = params['user']
+    @project_id = params['project_id']
+    @redcap_url = params['redcap_url']
+    @id         = params['id']
+    @fields     = params['fields']
 
     LOGGER.info 'parameters:'
-    LOGGER.info req.inspect
-
-    content_type :json
+    LOGGER.info params.inspect
 
     results = Query.new(@id, @fields).execute
     
-    results.to_json
+    json results
   end
 end

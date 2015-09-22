@@ -3,6 +3,7 @@ source 'http://rubygems.org/'
 gem 'foreman'
 gem 'puma'
 gem 'sinatra'
+gem 'sinatra-contrib'
 gem 'tiny_tds'
 
 group :development do
