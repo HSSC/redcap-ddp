@@ -17,7 +17,12 @@ module GlobalNamespace
     end
     
     def sql_select(columns)
-      @columns += columns.map { |col| col['field'] }
+      columns.each do |col|
+        @columns << col['field']
+        if col['timestamp_max'] && col['timestamp_min']
+          @time_ranges << {from: Time.strptime(col['timestamp_min'], '%Y-%m-%d %H:%M:%S'), to: Time.strptime(col['timestamp_max'], '%Y-%m-%d %H:%M:%S')}
+        end
+      end
       self
     end
     
@@ -37,12 +42,9 @@ module GlobalNamespace
       self
     end
     
-    def time_range(from, to)
-      @time_ranges << { from: Time.parse(from), to: Time.parse(to) }
-      self
-    end
-    
     def to_s
+      @columns.uniq!
+
       select_clause = "SELECT #{@columns.map { |col| prefix(col) }.join(',')}"
       from_clause   = "FROM #{@from}"
       unless @joins.empty?
@@ -56,7 +58,7 @@ module GlobalNamespace
         gross_from = @time_ranges.map { |tr| tr[:from] }.min.strftime('%Y-%m-%d %H:%M:%S')
         gross_to   = @time_ranges.map { |tr| tr[:to] }.max.strftime('%Y-%m-%d %H:%M:%S')
         
-        where_clause += " AND (DATEFORMAT(#{prefix(TIMESTAMP_COLUMN)}, 'YYY-MM-DD HH:MM:SS') BETWEEN #{gross_from} AND #{gross_to})"
+        where_clause += %Q{ AND (DATEFORMAT(#{prefix(TIMESTAMP_COLUMN)}, 'YYY-MM-DD HH:MM:SS') BETWEEN "#{gross_from}" AND "#{gross_to}")}
       end
       
       "#{select_clause} #{from_clause} #{where_clause}"
@@ -65,7 +67,8 @@ module GlobalNamespace
     private
     
     def prefix(column)
-      (GlobalNamespace.global_settings[:metadata].select { |f| f['field'] == column }.first)['category'] + "." + column
+      # casecmp returns 0 if strings are equal, ignoring case
+      "EDW2." + (GlobalNamespace.global_settings[:metadata].find { |f| column.casecmp(f['field']).zero? })['category'] + "." + column
     end
   end
 end

@@ -1,6 +1,9 @@
 module GlobalNamespace
+
   class Query < DbClient
-        
+
+    TIMESTAMP_COLUMN    = "OrderDTM"
+
     def initialize(id, fields)
       @id = id
       @fields = fields
@@ -8,6 +11,10 @@ module GlobalNamespace
     end
     
     def execute
+      #puts QueryString.new(@id).
+      #  sql_select(@temporal_fields + [{'field' => TIMESTAMP_COLUMN}]).
+      #  to_s
+
       results      = []
       query_string = QueryString.new(@id).
         sql_select(@non_temporal_fields).
