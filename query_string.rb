@@ -64,7 +64,7 @@ module GlobalNamespace
     end
 
     def columns
-      @non_temporal_fields.uniq.map { |field| prefix(field) }.join(',')
+      @fields.uniq.map { |field| prefix(field) }.join(',')
     end
 
     def time_ranges
