@@ -6,10 +6,10 @@ module GlobalNamespace
     PATIENTS_TABLE      = 'EDW2.Patients'
     ORDER_RESULTS_TABLE = 'EDW2.Order_Results'    
     
-    def initialize(id, fields)
-      @id          = id
-      @fields      = fields.uniq { |field| field['field'] }
-      @temporal_fields, @non_temporal_fields = @fields.partition { |field| field['timestamp_max'] && field['timestamp_min'] }
+    def initialize(id, temporal_fields, non_temporal_fields)
+      @id                  = id
+      @temporal_fields 	   = temporal_fields
+      @non_temporal_fields = non_temporal_fields
     end
     
     def to_s
@@ -65,7 +65,7 @@ module GlobalNamespace
     end
 
     def columns
-      @fields.map { |field| prefix(field['field']) }.join(',')
+      (@temporal_fields + @non_temporal_fields).map { |field| prefix(field['field']) }.join(',')
     end
 
     def time_ranges
