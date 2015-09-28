@@ -5,7 +5,6 @@ module GlobalNamespace
   class QueryString
     PATIENTS_TABLE      = 'EDW2.Patients'
     ORDER_RESULTS_TABLE = 'EDW2.Order_Results'    
-    TIMESTAMP_COLUMN    = 'ResultsDTM'
     
     def initialize(id, fields)
       @id          = id
@@ -27,7 +26,7 @@ module GlobalNamespace
     def select_clause
       clause = "SELECT #{columns}"
       if @temporal_fields.any?
-        clause += ",#{prefix(TIMESTAMP_COLUMN)}"
+        clause += ",#{prefix(GlobalNamespace.global_settings[:timestamp_column])}"
       end
       clause
     end
@@ -43,7 +42,7 @@ module GlobalNamespace
         gross_from = time_ranges.map { |tr| tr[:from] }.min.strftime('%Y-%m-%d %H:%M:%S')
         gross_to   = time_ranges.map { |tr| tr[:to] }.max.strftime('%Y-%m-%d %H:%M:%S')
 
-	clause += %Q{ AND (DATEFORMAT(#{prefix(TIMESTAMP_COLUMN)}, 'YYYY-MM-DD HH:MM:SS') BETWEEN '#{gross_from}' AND '#{gross_to}')}
+	clause += %Q{ AND (DATEFORMAT(#{prefix(GlobalNamespace.global_settings[:timestamp_column])}, 'YYYY-MM-DD HH:MM:SS') BETWEEN '#{gross_from}' AND '#{gross_to}')}
       end
 
       clause
@@ -66,7 +65,7 @@ module GlobalNamespace
     end
 
     def columns
-      @fields.uniq.map { |field| prefix(field['field']) }.join(',')
+      @fields.map { |field| prefix(field['field']) }.join(',')
     end
 
     def time_ranges

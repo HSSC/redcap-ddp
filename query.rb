@@ -2,8 +2,6 @@ module GlobalNamespace
 
   class Query < DbClient
 
-    TIMESTAMP_COLUMN    = "ResultsDTM"
-
     def initialize(id, fields)
       @id = id
       @fields = fields
@@ -12,12 +10,12 @@ module GlobalNamespace
     def execute
       results      = []
       query_string = QueryString.new(@id, @fields).to_s
-      puts "DEBUG: #{query_string}"
       rows         = client.execute(query_string)
 
       rows.each do |row| 
-        timestamp = row[TIMESTAMP_COLUMN]
-        row.delete(TIMESTAMP_COLUMN)
+        timestamp = row[GlobalNamespace.global_settings[:timestamp_column]]
+        
+        row.delete(GlobalNamespace.global_settings[:timestamp_column])
         row.each do |key, value|
           if timestamp
             results.push({ field: key, value: value, timestamp: timestamp })
