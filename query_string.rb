@@ -5,11 +5,10 @@ module GlobalNamespace
   class QueryString
     PATIENTS_TABLE      = 'EDW2.Patients'
     ORDER_RESULTS_TABLE = 'EDW2.Order_Results'    
-    TIMESTAMP_COLUMN    = 'ResultsDTM'
     
     def initialize(id, fields)
       @id          = id
-      @fields      = fields
+      @fields      = fields.uniq { |field| field['field'] }
       @temporal_fields, @non_temporal_fields = @fields.partition { |field| field['timestamp_max'] && field['timestamp_min'] }
     end
     
@@ -25,7 +24,11 @@ module GlobalNamespace
     private
 
     def select_clause
-      "SELECT #{columns}"
+      clause = "SELECT #{columns}"
+      if @temporal_fields.any?
+        clause += ",#{prefix(GlobalNamespace.global_settings[:timestamp_column])}"
+      end
+      clause
     end
 
     def from_clause
@@ -39,7 +42,7 @@ module GlobalNamespace
         gross_from = time_ranges.map { |tr| tr[:from] }.min.strftime('%Y-%m-%d %H:%M:%S')
         gross_to   = time_ranges.map { |tr| tr[:to] }.max.strftime('%Y-%m-%d %H:%M:%S')
 
-	clause += %Q{ AND (DATEFORMAT(#{prefix(TIMESTAMP_COLUMN)}, 'YYY-MM-DD HH:MM:SS') BETWEEN "#{gross_from}" AND "#{gross_to}")}
+	clause += %Q{ AND (DATEFORMAT(#{prefix(GlobalNamespace.global_settings[:timestamp_column])}, 'YYYY-MM-DD HH:MM:SS') BETWEEN '#{gross_from}' AND '#{gross_to}')}
       end
 
       clause
@@ -53,10 +56,8 @@ module GlobalNamespace
 
     def join_table
       field = @temporal_fields.first['field']
-      
-      if field_row = GlobalNamespace.global_settings[:metadata].find { |row| row.has_value?(field) }
-	@join_table ||= field_row['category']
-      end
+ 
+      @join_table ||= table_name(field) if field     
     end
 
     def join_on
@@ -64,7 +65,7 @@ module GlobalNamespace
     end
 
     def columns
-      @fields.uniq.map { |field| prefix(field) }.join(',')
+      @fields.map { |field| prefix(field['field']) }.join(',')
     end
 
     def time_ranges
@@ -74,12 +75,21 @@ module GlobalNamespace
     end
 
     def where_default
-      "#{PATIENTS_TABLE}.SourceSystem=\"EPIC\" #{PATIENTS_TABLE}.PatientExternalID=\"#{@id}\""
+      "#{PATIENTS_TABLE}.SourceSystem='EPIC' AND #{PATIENTS_TABLE}.PatientExternalID='#{@id}'"
     end
     
     def prefix(column)
-      # casecmp returns 0 if strings are equal, ignoring case
-      "EDW2." + (GlobalNamespace.global_settings[:metadata].find { |f| column.casecmp(f['field']).zero? })['category'] + "." + column
+      [
+        table_name(column),
+        column
+      ].join('.')
+    end
+
+    def table_name(column)
+      [
+        'EDW2',
+        GlobalNamespace.global_settings[:metadata].find { |row| row.has_value?(column) }['category']
+      ].join('.')
     end
   end
 end

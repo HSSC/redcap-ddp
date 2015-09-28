@@ -10,7 +10,8 @@ require_relative 'query_string'
 module GlobalNamespace
   def self.global_settings
     @gs ||= {
-      metadata: Dir["public/*.json"].map { |file| JSON.parse File.read(file) }.flatten
+      metadata: Dir["public/*.json"].map { |file| JSON.parse File.read(file) }.flatten,
+      timestamp_column: 'ResultsDTM'
     }
   end
 
