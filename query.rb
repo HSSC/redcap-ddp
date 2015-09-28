@@ -22,7 +22,6 @@ module GlobalNamespace
       temporal_results = [] 
 
       rows.each do |row|
-        @non_temporal_results ||= non_temporal_field_values(row)
         timestamp = row[GlobalNamespace.global_settings[:timestamp_column]]
 
         row.delete(GlobalNamespace.global_settings[:timestamp_column])
