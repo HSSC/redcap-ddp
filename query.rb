@@ -12,8 +12,8 @@ module GlobalNamespace
       query_string = QueryString.new(@id, @temporal_fields, @non_temporal_fields).to_s
       rows         = client.execute(query_string)
       row          = rows.each.first    
-   
-      non_temporal_field_values(row) + temporal_field_values(rows)
+      
+      row ? (non_temporal_field_values(row) + temporal_field_values(rows)) : []
     end
 
     private
