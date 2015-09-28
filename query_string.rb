@@ -5,7 +5,7 @@ module GlobalNamespace
   class QueryString
     PATIENTS_TABLE      = 'EDW2.Patients'
     ORDER_RESULTS_TABLE = 'EDW2.Order_Results'    
-    TIMESTAMP_COLUMN    = "OrderDTM"
+    TIMESTAMP_COLUMN    = 'ResultsDTM'
     
     def initialize(id, fields)
       @id          = id
@@ -74,7 +74,7 @@ module GlobalNamespace
     end
 
     def where_default
-      "#{PATIENTS_TABLE}.SourceSystem=\"EPIC\"", "#{PATIENTS_TABLE}.PatientExternalID=\"#{@id}\""
+      "#{PATIENTS_TABLE}.SourceSystem=\"EPIC\" #{PATIENTS_TABLE}.PatientExternalID=\"#{@id}\""
     end
     
     def prefix(column)
