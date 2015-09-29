@@ -5,6 +5,7 @@ gem 'puma'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'tiny_tds'
+gem 'rack-timeout'
 
 group :development do
   gem 'dotenv'
