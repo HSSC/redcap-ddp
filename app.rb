@@ -8,6 +8,7 @@ require_relative 'query'
 require_relative 'query_string'
 
 module GlobalNamespace
+
   def self.global_settings
     @gs ||= {
       metadata: Dir["public/*.json"].map { |file| JSON.parse File.read(file) }.flatten,
@@ -16,7 +17,7 @@ module GlobalNamespace
   end
 
   class App < Sinatra::Application
-    
+
     configure do
       LOGGER = Logger.new 'log/access.log'
       
