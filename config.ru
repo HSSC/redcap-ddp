@@ -1,15 +1,4 @@
-require 'dotenv'
+# This file is used by Rack-based servers to start the application.
 
-Dotenv.load
-
-require 'rubygems'
-require 'bundler'
-require 'rack-timeout'
-require './app'
-
-Bundler.require(:default, ENV.fetch('RACK_ENV').to_sym)
-
-use Rack::Timeout
-Rack::Timeout.timeout = 30
-
-run GlobalNamespace::App
+require ::File.expand_path('../config/environment', __FILE__)
+run Rails.application
