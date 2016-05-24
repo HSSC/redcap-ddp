@@ -1,10 +1,22 @@
 module Sybase
   class Connection
+    require 'dotenv'
+    Dotenv.load
+
     class << self; attr_accessor :table_name end
     class << self; attr_accessor :source_system end
     class << self; attr_accessor :id end
 
-    def self.connection; TinyTds::Client.new(username: 'redcap_dts', password: 'r3dc@p01', host: '128.23.191.53', port: 4100, tds_version: 42, timeout: 60) end
+    def self.connection
+      host = ENV.fetch('SYBASE_HOST'){nil}
+      user = ENV.fetch('SYBASE_USER'){nil}
+      pass = ENV.fetch('SYBASE_PASS'){nil}
+      port = ENV.fetch('SYBASE_PORT'){nil}
+      tds = ENV.fetch('SYBASE_TDS'){42}
+      timeout = ENV.fetch('SYBASE_TIMEOUT'){60}
+
+      TinyTds::Client.new(username: user, password: pass, host: host, port: port, tds_version: tds.to_i, timeout: timeout.to_i) 
+    end
 
     def self.first
       connection.execute("SELECT top 1 * FROM #{self.table_name} as t WHERE t.SourceSystem = '#{self.source_system}'").first

@@ -6,6 +6,8 @@ gem 'rails', '4.2.5.1'
 gem 'sqlite3'
 gem 'tiny_tds'
 
+gem 'dotenv'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

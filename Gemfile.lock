@@ -43,6 +43,7 @@ GEM
     byebug (8.2.2)
     concurrent-ruby (1.0.0)
     debug_inspector (0.0.2)
+    dotenv (2.1.0)
     erubis (2.7.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
@@ -112,6 +113,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  dotenv
   rails (= 4.2.5.1)
   spring
   sqlite3
