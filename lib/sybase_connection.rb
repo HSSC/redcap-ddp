@@ -14,8 +14,9 @@ module Sybase
       port = ENV.fetch('SYBASE_PORT'){nil}
       tds = ENV.fetch('SYBASE_TDS'){42}
       timeout = ENV.fetch('SYBASE_TIMEOUT'){60}
+      login_timeout = ENV.fetch('SYBASE_LOGIN_TIMEOUT'){30}
 
-      TinyTds::Client.new(username: user, password: pass, host: host, port: port, tds_version: tds.to_i, timeout: timeout.to_i) 
+      @connection ||= TinyTds::Client.new(username: user, password: pass, host: host, port: port, tds_version: tds.to_i, timeout: timeout.to_i, login_timeout: login_timeout.to_i) 
     end
 
     def self.first
