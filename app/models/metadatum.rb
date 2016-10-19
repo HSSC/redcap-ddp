@@ -5,7 +5,7 @@ class Metadatum < ActiveRecord::Base
 
   def self.klasses_for_field field
     source_tables = Metadatum.select(:source_tblname).where(:field => field, :version => current_version).map(&:source_tblname)
-    
+
     klasses = []
 
     if source_tables.include? 'EDW2.PATIENTS'
@@ -14,6 +14,8 @@ class Metadatum < ActiveRecord::Base
       klasses << OutpatientVital
     elsif source_tables.include? 'EDW2.OBSERVATIONS'
       klasses << InpatientVital
+    elsif source_tables.include? 'EDW2.ORDER_RESULTS'
+      klasses << Lab
     end
 
     klasses
