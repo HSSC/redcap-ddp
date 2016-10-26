@@ -16,7 +16,7 @@ module Sybase
       timeout = ENV.fetch('SYBASE_TIMEOUT'){60}
       login_timeout = ENV.fetch('SYBASE_LOGIN_TIMEOUT'){30}
 
-      @connection ||= TinyTds::Client.new(username: user, password: pass, host: host, port: port, tds_version: tds.to_i, timeout: timeout.to_i, login_timeout: login_timeout.to_i) 
+      @connection ||= TinyTds::Client.new(username: user, password: pass, host: host, port: port, tds_version: tds.to_i, timeout: timeout.to_i, login_timeout: login_timeout.to_i)
     end
 
     def self.first
@@ -32,7 +32,7 @@ module Sybase
         select = args[:select] || '*'
 
         query = "SELECT #{limit} #{select} FROM #{self.table_name} WHERE"
-        
+
         # append ID to where clause
         query += " #{self.id} = '#{id}' AND" if id
 
@@ -42,21 +42,21 @@ module Sybase
 
         self.execute(query)
       rescue Exception => e
-        puts e.message
-        puts e.backtrace.inspect
+        Rails.logger.debug e.message
+        Rails.logger.debug e.backtrace.inspect
       end
     end
 
     def self.execute query
       begin
-        puts "#"*50
-        puts query
-        puts "#"*50
+        Rails.logger.debug "#"*50
+        Rails.logger.debug query
+        Rails.logger.debug "#"*50
 
         connection.execute(query).to_a
       rescue Exception => e
-        puts e.message
-        puts e.backtrace.inspect
+        Rails.logger.debug e.message
+        Rails.logger.debug e.backtrace.inspect
       end
     end
   end
