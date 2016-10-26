@@ -1,9 +1,9 @@
 class DataController < ApplicationController
   def index
-    # {"user"=>"anc63", "project_id"=>"36", "redcap_url"=>"https://redcap-dev.obis.musc.edu/", "id"=>"123456", 
-    #  "fields"=>[{"field"=>"FirstName"}, {"field"=>"LastName"}], "controller"=>"data", "action"=>"index", 
+    # {"user"=>"anc63", "project_id"=>"36", "redcap_url"=>"https://redcap-dev.obis.musc.edu/", "id"=>"123456",
+    #  "fields"=>[{"field"=>"FirstName"}, {"field"=>"LastName"}], "controller"=>"data", "action"=>"index",
     #  "datum"=>{"user"=>"anc63", "project_id"=>"36", "redcap_url"=>"https://redcap-dev.obis.musc.edu/", "id"=>"123456", "fields"=>[{"field"=>"FirstName"}, {"field"=>"LastName"}]}}
-    
+
     puts "#"*50
     puts "params:"
     puts params.inspect
@@ -17,11 +17,13 @@ class DataController < ApplicationController
 
     results = []
 
-    fields.each do |field_info|
-      # field info examples {"field"=>"FirstName"} OR {"field"=>"BP_Systolic", "timestamp_min" => '', "timestamp_max" => ''}
-      Metadatum.klasses_for_field(field_info['field']).each do |klass|
-        field_info['source_tblname'] = klass.table_name # added so we know which table in case of multiple 
-        results << klass.ddp_query(id, field_info)
+    if fields
+      fields.each do |field_info|
+        # field info examples {"field"=>"FirstName"} OR {"field"=>"BP_Systolic", "timestamp_min" => '', "timestamp_max" => ''}
+        Metadatum.klasses_for_field(field_info['field']).each do |klass|
+          field_info['source_tblname'] = klass.table_name # added so we know which table in case of multiple
+          results << klass.ddp_query(id, field_info)
+        end
       end
     end
 
