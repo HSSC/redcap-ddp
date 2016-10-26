@@ -4,10 +4,10 @@ class DataController < ApplicationController
     #  "fields"=>[{"field"=>"FirstName"}, {"field"=>"LastName"}], "controller"=>"data", "action"=>"index",
     #  "datum"=>{"user"=>"anc63", "project_id"=>"36", "redcap_url"=>"https://redcap-dev.obis.musc.edu/", "id"=>"123456", "fields"=>[{"field"=>"FirstName"}, {"field"=>"LastName"}]}}
 
-    puts "#"*50
-    puts "params:"
-    puts params.inspect
-    puts "#"*50
+    Rails.logger.debug "#"*50
+    Rails.logger.debug "params:"
+    Rails.logger.debug params.inspect
+    Rails.logger.debug "#"*50
 
     user = params['user']
     project_id = params['project_id']
@@ -29,10 +29,10 @@ class DataController < ApplicationController
 
     results.flatten!
 
-    puts "#"*50
-    puts "results:"
-    puts results.to_json
-    puts "#"*50
+    Rails.logger.debug "#"*50
+    Rails.logger.debug "results:"
+    Rails.logger.debug results.to_json
+    Rails.logger.debug "#"*50
 
     render json: results.to_json
   end
