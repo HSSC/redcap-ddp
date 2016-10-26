@@ -12,6 +12,19 @@ class Patient < Sybase::Connection
     results = find(id, :select => field_name)
 
     # if we have results map them otherwise return nil
-    results.nil? ? nil : results.map{|x| {"field" => field_name, "value" => x["#{field_name}"]} }
+
+    if results.nil?
+      return nil
+    else
+      results.map do |x|
+        ### allow for special formatting of return data based on field requested ###
+        case field_name
+        when 'BirthDate'
+          {"field" => field_name, "value" => x["#{field_name}"].strftime("%Y-%m-%d")}
+        else
+          {"field" => field_name, "value" => x["#{field_name}"]}
+        end
+      end
+    end
   end
 end
