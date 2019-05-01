@@ -20,7 +20,7 @@ class Patient < Sybase::Connection
         ### allow for special formatting of return data based on field requested ###
         case field_name
         when 'DeathDate'
-          {"field" => field_name, "value" => x["#{field_name}"].strftime("%Y-%m-%d")}
+          {"field" => field_name, "value" => (x["#{field_name}"].blank? ? nil : x["#{field_name}"].strftime("%Y-%m-%d"))}
         when 'BirthDate'
           {"field" => field_name, "value" => x["#{field_name}"].strftime("%Y-%m-%d")}
         else
