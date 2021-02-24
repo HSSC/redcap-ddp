@@ -8,14 +8,10 @@ class Metadatum < ActiveRecord::Base
 
     klasses = []
 
-    if source_tables.include? 'EDW2.PATIENTS'
+    if source_tables.include? 'RDM.V_PATIENT'
       klasses << Patient
-    elsif source_tables.include? 'EDW2.OPOBSERVATIONS'
-      klasses << OutpatientVital
-    elsif source_tables.include? 'EDW2.OBSERVATIONS'
-      klasses << InpatientVital
-    elsif source_tables.include? 'EDW2.ORDER_RESULTS'
-      klasses << Lab
+    elsif source_tables.include? 'RDM.OBSERVATION'
+      klasses << Vital
     end
 
     klasses
