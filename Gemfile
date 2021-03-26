@@ -7,7 +7,7 @@ gem 'sqlite3'
 gem 'activerecord-oracle_enhanced-adapter'
 gem 'ruby-oci8'
 
-gem 'dotenv'
+gem 'dotenv-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
