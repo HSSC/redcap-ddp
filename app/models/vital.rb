@@ -32,6 +32,22 @@ class Vital < ActiveRecord::Base
     results = where(patient_id: id, observation_id: metadata.source_code, observation_date: field_info['timestamp_min']..field_info['timestamp_max']) #, :conditions => "TID = #{metadata.source_code} AND DispName = '#{metadata.source_name}' AND date(TimeObservationMade) between '#{field_info['timestamp_min']}' and '#{field_info['timestamp_max']}'"}
 
     # if we have results map them otherwise return nil
-    results.nil? ? nil : results.map{|x| {"field" => field_name, "value" => x['observation_value'], "timestamp" => x['observation_date'].strftime('%Y-%m-%d %H:%M:%S')} }
+    if results.nil?
+      nil
+    else
+      r_array = []
+
+      results.each do |x|
+        if metadata.source_value == 'OBSERVATION_VALUE'
+          r_array << {"field" => field_name, "value" => x.observation_value, "timestamp" => x.observation_date.strftime('%Y-%m-%d %H:%M:%S')}
+        else
+          source_value = metadata.source_value.gsub('OBSERVATION_VALUE', "'#{x.observation_value}'")
+          value = Vital.connection.exec_query("select #{source_value} as x from dual").to_a.first['x']
+          r_array << {"field" => field_name, "value" => value, "timestamp" => x.observation_date.strftime('%Y-%m-%d %H:%M:%S')}
+        end
+      end
+
+      return r_array
+    end
   end
 end
