@@ -1,6 +1,7 @@
 class Patient < ActiveRecord::Base
   establish_connection "rdw_#{Rails.env.to_s}".to_sym
   self.table_name = "RDM\.V_PATIENT"
+  self.primary_key = 'patient_id'
 
   def self.ddp_query(id, field_info)
 

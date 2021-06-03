@@ -12,6 +12,10 @@ class Metadatum < ActiveRecord::Base
       klasses << Patient
     elsif source_tables.include? 'RDM.OBSERVATION'
       klasses << Vital
+    elsif source_tables.include? 'RDM.LAB_RESULT'
+      klasses << Lab
+    elsif source_tables.include? 'RDM.ORDER_RESULT'
+      klasses << OrderResult
     end
 
     klasses
