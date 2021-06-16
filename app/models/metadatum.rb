@@ -16,6 +16,10 @@ class Metadatum < ActiveRecord::Base
       klasses << Lab
     elsif source_tables.include? 'RDM.ORDER_RESULT'
       klasses << OrderResult
+    elsif source_tables.include? 'RDM.IMMUNIZATION'
+      klasses << Immunization
+    elsif source_tables.include? 'RDM.SMART_DATA_ELEMENT'
+      klasses << SmartDataElement
     end
 
     klasses
